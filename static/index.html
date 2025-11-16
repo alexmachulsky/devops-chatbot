@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevOps ChatBot | AI Assistant</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-robot"></i>
+                    <h1>DevOps ChatBot</h1>
+                </div>
+                <p class="tagline">Your AI-Powered DevOps Assistant</p>
+            </div>
+        </header>
+
+        <!-- Chat Container -->
+        <div class="chat-container">
+            <!-- Messages Area -->
+            <div class="messages" id="messages">
+                <!-- Welcome Message -->
+                <div class="message bot-message">
+                    <div class="message-avatar bot-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="message-content">
+                        <div class="message-text">
+                            <p>👋 Hello! I'm your DevOps assistant. I can help you with:</p>
+                            <ul>
+                                <li>Docker & Kubernetes</li>
+                                <li>CI/CD Pipelines</li>
+                                <li>Infrastructure as Code (Terraform, Ansible)</li>
+                                <li>Cloud Platforms (AWS, Azure, GCP)</li>
+                                <li>Monitoring & Logging</li>
+                                <li>Best Practices & Troubleshooting</li>
+                            </ul>
+                            <p>Ask me anything! 🚀</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="input-area">
+                <div class="input-container">
+                    <textarea 
+                        id="userInput" 
+                        placeholder="Ask me about Docker, Kubernetes, CI/CD, or any DevOps topic..."
+                        rows="1"
+                    ></textarea>
+                    <button id="sendButton" class="send-button">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+                <div class="input-footer">
+                    <span class="tip">💡 Tip: Be specific for better answers!</span>
+                    <button id="clearButton" class="clear-button">
+                        <i class="fas fa-trash"></i> Clear Chat
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Indicator -->
+    <div class="loading" id="loading" style="display: none;">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
