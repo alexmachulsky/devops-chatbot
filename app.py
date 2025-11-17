@@ -33,6 +33,10 @@ Be concise but thorough. If you're not sure about something, say so."""
 def index():
     return send_from_directory('static', 'index.html')
 
+@app.route('/<path:path>')
+def serve_static(path):
+    return send_from_directory('static', path)
+
 @app.route('/api/chat', methods=['POST'])
 def chat():
     try:
