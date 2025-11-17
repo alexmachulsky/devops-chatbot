@@ -301,9 +301,11 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ## 🙏 Acknowledgments
 
-- OpenAI for the GPT-3.5 API
+- [Ollama](https://ollama.ai/) for providing free, local LLM inference
+- [Meta AI](https://ai.meta.com/) for the Llama 3.1 model
 - Flask framework and community
 - Docker and Kubernetes communities
+- Font Awesome for icons
 
 ## 📧 Contact
 
