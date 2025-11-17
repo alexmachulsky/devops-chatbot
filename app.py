@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
-from openai import OpenAI
+import requests
 import os
 from dotenv import load_dotenv
 
@@ -10,8 +10,9 @@ load_dotenv()
 app = Flask(__name__, static_folder='static')
 CORS(app)
 
-# Initialize OpenAI client
-client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+# Ollama configuration
+OLLAMA_URL = os.getenv('OLLAMA_URL', 'http://ollama:11434')
+OLLAMA_MODEL = os.getenv('OLLAMA_MODEL', 'llama2')
 
 # System prompt for DevOps assistant
 SYSTEM_PROMPT = """You are a helpful DevOps assistant specializing in:
@@ -43,26 +44,48 @@ def chat():
         user_message = data['message']
         conversation_history = data.get('history', [])
         
-        # Build messages array with system prompt and conversation history
-        messages = [{"role": "system", "content": SYSTEM_PROMPT}]
-        messages.extend(conversation_history)
-        messages.append({"role": "user", "content": user_message})
+        # Build conversation context for Ollama
+        context = SYSTEM_PROMPT + "\n\n"
         
-        # Call OpenAI API
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=messages,
-            temperature=0.7,
-            max_tokens=1000
+        # Add conversation history
+        for msg in conversation_history:
+            role = "User" if msg["role"] == "user" else "Assistant"
+            context += f"{role}: {msg['content']}\n\n"
+        
+        # Add current user message
+        context += f"User: {user_message}\n\nAssistant:"
+        
+        # Call Ollama API
+        ollama_response = requests.post(
+            f"{OLLAMA_URL}/api/generate",
+            json={
+                "model": OLLAMA_MODEL,
+                "prompt": context,
+                "stream": False,
+                "options": {
+                    "temperature": 0.7,
+                    "num_predict": 1000
+                }
+            },
+            timeout=60
         )
         
-        assistant_message = response.choices[0].message.content
+        if ollama_response.status_code != 200:
+            raise Exception(f"Ollama API error: {ollama_response.text}")
+        
+        assistant_message = ollama_response.json()["response"]
         
         return jsonify({
-            'message': assistant_message,
+            'message': assistant_message.strip(),
             'success': True
         })
     
+    except requests.exceptions.Timeout:
+        app.logger.error("Ollama request timed out")
+        return jsonify({
+            'error': 'Request timed out. The model might be loading. Please try again.',
+            'success': False
+        }), 504
     except Exception as e:
         app.logger.error(f"Error in chat endpoint: {str(e)}")
         return jsonify({

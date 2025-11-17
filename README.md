@@ -1,6 +1,6 @@
 # DevOps ChatBot 🤖
 
-An AI-powered chatbot application designed to assist with DevOps tasks, questions, and best practices. Built with Python Flask, OpenAI GPT-3.5, Docker, and Kubernetes.
+An AI-powered chatbot application designed to assist with DevOps tasks, questions, and best practices. Built with Python Flask, Ollama (local LLM), Docker, and Kubernetes.
 
 ![DevOps ChatBot](https://img.shields.io/badge/DevOps-ChatBot-blue)
 ![Python](https://img.shields.io/badge/Python-3.11-green)
@@ -9,20 +9,21 @@ An AI-powered chatbot application designed to assist with DevOps tasks, question
 
 ## 🌟 Features
 
-- **AI-Powered Responses**: Uses OpenAI GPT-3.5 for intelligent DevOps assistance
+- **AI-Powered Responses**: Uses Ollama with Llama 3.2 for intelligent DevOps assistance (100% free, runs locally)
 - **Modern UI**: Clean, responsive chat interface with smooth animations
 - **Conversation History**: Maintains context across multiple messages
 - **DevOps Expertise**: Specialized in Docker, Kubernetes, CI/CD, Terraform, Ansible, and more
 - **Production Ready**: Containerized with Docker and deployable to Kubernetes
 - **Health Checks**: Built-in health endpoints for monitoring
 - **Security**: Non-root container user, environment variable management
+- **No API Keys**: Runs completely locally with Ollama - no external API dependencies
 
 ## 🛠️ Tech Stack
 
 ### Backend
 - **Python 3.11** - Application runtime
 - **Flask** - Web framework
-- **OpenAI API** - GPT-3.5-turbo for AI responses
+- **Ollama** - Local LLM server (Llama 3.2 1B model)
 - **Gunicorn** - Production WSGI server
 
 ### Frontend
@@ -43,7 +44,7 @@ An AI-powered chatbot application designed to assist with DevOps tasks, question
 
 - Python 3.11+
 - Docker & Docker Compose
-- OpenAI API key ([Get one here](https://platform.openai.com/api-keys))
+- At least 4GB of RAM (for Ollama)
 
 ### Local Development
 
@@ -56,7 +57,7 @@ An AI-powered chatbot application designed to assist with DevOps tasks, question
 2. **Set up environment variables**:
    ```bash
    cp .env.example .env
-   # Edit .env and add your OPENAI_API_KEY
+   # Edit .env to customize Ollama settings if needed
    ```
 
 3. **Install dependencies**:
@@ -76,38 +77,47 @@ An AI-powered chatbot application designed to assist with DevOps tasks, question
 
 ### Docker Deployment
 
-1. **Build and run with Docker Compose**:
+1. **Build and run with Docker Compose** (includes Ollama):
    ```bash
-   # Make sure .env file has your OPENAI_API_KEY
    docker compose up -d
    ```
 
-2. **Access the chatbot**:
-   Open `http://localhost:5000`
+   This will:
+   - Start the Ollama server container
+   - Pull the Llama 3.2 1B model (first run takes 2-3 minutes)
+   - Start the Flask chatbot application
 
-3. **View logs**:
+2. **Pull the Ollama model** (if not already pulled):
    ```bash
-   docker compose logs -f
+   docker exec ollama-server ollama pull llama3.2:1b
    ```
 
-4. **Stop the container**:
+3. **Access the chatbot**:
+   Open `http://localhost:5000`
+
+4. **View logs**:
+   ```bash
+   docker compose logs -f chatbot
+   docker compose logs -f ollama
+   ```
+
+5. **Stop the containers**:
    ```bash
    docker compose down
    ```
 
 ### Kubernetes Deployment
 
-1. **Create secret with your API key**:
+> **Note**: Kubernetes deployment requires updating the manifests to include Ollama service. Currently optimized for Docker Compose deployment.
+
+1. **Create ConfigMap**:
    ```bash
    cd k8s
-   cp secret.yaml.example secret.yaml
-   # Edit secret.yaml and add your actual OPENAI_API_KEY
-   kubectl apply -f secret.yaml
+   kubectl apply -f configmap.yaml
    ```
 
 2. **Deploy the application**:
    ```bash
-   kubectl apply -f configmap.yaml
    kubectl apply -f deployment.yaml
    kubectl apply -f service.yaml
    ```
@@ -178,12 +188,34 @@ The DevOps ChatBot can help with:
 
 | Variable | Description | Required | Default |
 |----------|-------------|----------|---------|
-| `OPENAI_API_KEY` | Your OpenAI API key | Yes | - |
+| `OLLAMA_URL` | Ollama server URL | No | `http://ollama:11434` |
+| `OLLAMA_MODEL` | Ollama model to use | No | `llama3.2:1b` |
 | `FLASK_ENV` | Flask environment | No | `production` |
 | `FLASK_DEBUG` | Enable Flask debug mode | No | `False` |
 | `PORT` | Port to run the server | No | `5000` |
 | `HOST` | Host to bind the server | No | `0.0.0.0` |
 | `SECRET_KEY` | Flask secret key | No | Auto-generated |
+
+### Available Ollama Models
+
+You can change the model by updating the `OLLAMA_MODEL` environment variable:
+
+- `llama3.2:1b` - Smallest, fastest (1.3GB, recommended for systems with 4GB+ RAM)
+- `llama3.2:3b` - Balanced performance (2GB)
+- `llama2` - Original model (3.8GB, requires 8GB+ RAM)
+- `codellama` - Code-specialized model
+
+To switch models:
+```bash
+# Pull a different model
+docker exec ollama-server ollama pull llama3.2:3b
+
+# Update .env file
+OLLAMA_MODEL=llama3.2:3b
+
+# Restart chatbot
+docker compose restart chatbot
+```
 
 ## 🔒 Security
 
