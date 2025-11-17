@@ -1,23 +1,23 @@
-# DevOps ChatBot 🤖
+# AI ChatBot 🤖
 
-An AI-powered chatbot application designed to assist with DevOps tasks, questions, and best practices. Built with Python Flask, Ollama (local LLM), Docker, and Kubernetes.
+An intelligent AI-powered chatbot application that can assist with any topic - from technology and science to business and everyday questions. Built with Python Flask, Ollama (local LLM), Docker, and Kubernetes.
 
-![DevOps ChatBot](https://img.shields.io/badge/DevOps-ChatBot-blue)
+![AI ChatBot](https://img.shields.io/badge/AI-ChatBot-blue)
 ![Python](https://img.shields.io/badge/Python-3.11-green)
 ![Docker](https://img.shields.io/badge/Docker-Ready-blue)
 ![Kubernetes](https://img.shields.io/badge/Kubernetes-Ready-blue)
 
 ## 🌟 Features
 
-- **AI-Powered Responses**: Uses Ollama with Llama 3.1 8B for intelligent DevOps assistance (100% free, runs locally)
+- **AI-Powered Responses**: Uses Ollama with Llama 3.1 8B for intelligent assistance across any topic (100% free, runs locally)
 - **Modern UI**: Clean, responsive chat interface with smooth animations and glassmorphism effects
 - **Conversation History**: Maintains context across multiple messages
-- **DevOps Expertise**: Specialized in Docker, Kubernetes, CI/CD, Terraform, Ansible, and more
+- **General Knowledge**: Can discuss technology, science, business, arts, health, and much more
 - **Production Ready**: Containerized with Docker and deployable to Kubernetes
 - **Health Checks**: Built-in health endpoints for monitoring
 - **Security**: Non-root container user, environment variable management
 - **No API Keys**: Runs completely locally with Ollama - no external API dependencies
-- **High Quality Responses**: 8B parameter model provides detailed explanations with code examples
+- **High Quality Responses**: 8B parameter model provides detailed, helpful answers
 
 ## 🛠️ Tech Stack
 
@@ -51,8 +51,8 @@ An AI-powered chatbot application designed to assist with DevOps tasks, question
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/alexmachulsky/devops-chatbot.git
-   cd devops-chatbot
+   git clone https://github.com/alexmachulsky/ai-chatbot.git
+   cd ai-chatbot
    ```
 
 2. **Set up environment variables**:
@@ -146,7 +146,7 @@ Send a message to the chatbot.
 **Request**:
 ```json
 {
-  "message": "How do I create a Dockerfile?",
+  "message": "What is photosynthesis?",
   "history": []
 }
 ```
@@ -154,7 +154,7 @@ Send a message to the chatbot.
 **Response**:
 ```json
 {
-  "message": "To create a Dockerfile...",
+  "message": "Photosynthesis is the process by which...",
   "success": true
 }
 ```
@@ -172,16 +172,15 @@ Health check endpoint for monitoring.
 
 ## 🎯 Use Cases
 
-The DevOps ChatBot can help with:
+The AI ChatBot can help with:
 
-- **Docker**: Container creation, optimization, troubleshooting
-- **Kubernetes**: Resource management, deployments, debugging
-- **CI/CD**: Pipeline setup, GitHub Actions, Jenkins
-- **Infrastructure as Code**: Terraform modules, Ansible playbooks
-- **Cloud Platforms**: AWS, Azure, GCP best practices
-- **Monitoring**: Prometheus, Grafana, ELK/EFK stack
-- **Security**: Best practices, vulnerability scanning
-- **Troubleshooting**: Common DevOps issues and solutions
+- **Technology & Programming**: Coding questions, debugging, best practices, frameworks
+- **Science & Mathematics**: Explanations, problem-solving, research concepts
+- **Business & Finance**: Strategy, analysis, market insights, career advice
+- **Arts & Literature**: Creative writing, analysis, recommendations
+- **Health & Wellness**: General information, fitness tips, nutrition basics
+- **Education**: Learning assistance, explanations, study help
+- **General Knowledge**: History, geography, current events, and more
 
 ## 🔧 Configuration
 
@@ -260,15 +259,15 @@ The GitHub Actions pipeline automatically:
          │
          ▼
 ┌─────────────────┐
-│  OpenAI API     │
-│  GPT-3.5-turbo  │
+│ Ollama Server   │
+│ Llama 3.1 8B    │
 └─────────────────┘
 ```
 
 ## 📝 Project Structure
 
 ```
-devops-chatbot/
+ai-chatbot/
 ├── .github/
 │   └── workflows/
 │       └── ci-cd.yaml          # CI/CD pipeline
