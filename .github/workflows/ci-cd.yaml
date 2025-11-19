@@ -33,8 +33,8 @@ jobs:
         run: |
           black --check app.py || true
 
-  build:
-    name: Build Docker Image
+  build-and-test:
+    name: Build and Test
     runs-on: ubuntu-latest
     needs: lint
     steps:
@@ -60,14 +60,7 @@ jobs:
           docker stop test-container
           docker rm test-container
 
-  security:
-    name: Security Scan
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Run Trivy vulnerability scanner
+      - name: Run Trivy security scan
         uses: aquasecurity/trivy-action@master
         with:
           scan-type: "fs"
@@ -86,7 +79,7 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-    needs: [build, security]
+    needs: build-and-test
     if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v3
