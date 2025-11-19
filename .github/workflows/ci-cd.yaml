@@ -45,15 +45,16 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t devops-chatbot:${{ github.sha }} .
+          docker build -t ai-chatbot:${{ github.sha }} .
 
       - name: Test Docker container
         run: |
           docker run -d -p 5000:5000 \
-            -e OPENAI_API_KEY=test_key \
+            -e OLLAMA_URL=http://mock-ollama:11434 \
+            -e OLLAMA_MODEL=llama3.1:8b \
             -e FLASK_ENV=testing \
             --name test-container \
-            devops-chatbot:${{ github.sha }}
+            ai-chatbot:${{ github.sha }}
           sleep 10
           curl -f http://localhost:5000/api/health || exit 1
           docker stop test-container
@@ -95,3 +96,6 @@ jobs:
           echo "✅ All checks passed! Ready for deployment."
           echo "🚀 To deploy to Kubernetes:"
           echo "   kubectl apply -f k8s/"
+          echo ""
+          echo "📦 To deploy with Docker Compose:"
+          echo "   docker compose up -d"
