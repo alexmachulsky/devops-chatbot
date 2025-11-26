@@ -93,9 +93,10 @@ jobs:
 
       - name: Deployment notification
         run: |
-          echo "✅ All checks passed! Ready for deployment."
-          echo "🚀 To deploy to Kubernetes:"
-          echo "   kubectl apply -f k8s/"
+          echo "All checks passed! Ready for deployment."
           echo ""
-          echo "📦 To deploy with Docker Compose:"
-          echo "   docker compose up -d"
+          echo "To deploy to Kubernetes:"
+          echo "  kubectl apply -f k8s/"
+          echo ""
+          echo "To deploy with Docker Compose:"
+          echo "  docker compose up -d"
