@@ -76,7 +76,7 @@ An intelligent AI-powered chatbot application that can assist with any topic - f
 5. **Access the chatbot**:
    Open your browser and navigate to `http://localhost:5000`
 
-### Docker Deployment
+### Docker Compose Deployment (Recommended for Local/Testing)
 
 1. **Build and run with Docker Compose** (includes Ollama):
    ```bash
@@ -107,36 +107,75 @@ An intelligent AI-powered chatbot application that can assist with any topic - f
    docker compose down
    ```
 
-### Kubernetes Deployment
+### Kubernetes Deployment (Production-Ready)
 
-> **Note**: Kubernetes deployment requires updating the manifests to include Ollama service. Currently optimized for Docker Compose deployment.
+The chatbot supports full Kubernetes deployment with high availability and scalability features.
 
-1. **Create ConfigMap**:
+#### Prerequisites
+- Kubernetes cluster (tested with Minikube v1.35.0)
+- kubectl configured
+- Docker for building images
+- Ollama running (via Docker Compose recommended)
+
+#### Quick Deploy
+
+1. **Start Ollama** (via Docker Compose for better resource management):
+   ```bash
+   docker-compose up -d ollama
+   docker exec ollama-server ollama pull llama3.1:8b
+   ```
+
+2. **Build the image** (for Minikube):
+   ```bash
+   eval $(minikube docker-env)
+   docker build -t ai-chatbot:latest .
+   ```
+
+3. **Deploy to Kubernetes**:
    ```bash
    cd k8s
    kubectl apply -f configmap.yaml
-   ```
-
-2. **Deploy the application**:
-   ```bash
    kubectl apply -f deployment.yaml
    kubectl apply -f service.yaml
    ```
 
-3. **Check deployment status**:
+4. **Wait for pods to be ready**:
    ```bash
-   kubectl get pods -l app=devops-chatbot
-   kubectl get svc devops-chatbot
+   kubectl wait --for=condition=ready pod -l app=devops-chatbot --timeout=60s
    ```
 
-4. **Access the application**:
+5. **Access the application**:
    ```bash
-   # If using LoadBalancer
-   kubectl get svc devops-chatbot
+   # Via port-forward (development)
+   kubectl port-forward svc/devops-chatbot 8888:80
+   # Access at http://localhost:8888
    
-   # If using port-forward
-   kubectl port-forward svc/devops-chatbot 5000:80
+   # Via NodePort (network access)
+   minikube service devops-chatbot --url
    ```
+
+#### Kubernetes Features
+
+- **High Availability**: 2 replicas with automatic failover
+- **Health Checks**: Liveness and readiness probes
+- **Resource Management**: CPU and memory limits
+- **Session Affinity**: Maintains user sessions
+- **Scalability**: Easy horizontal scaling with `kubectl scale`
+- **Rolling Updates**: Zero-downtime deployments
+
+#### Monitoring
+```bash
+# Check pod status
+kubectl get pods -l app=devops-chatbot
+
+# View logs
+kubectl logs -l app=devops-chatbot -f
+
+# Check resource usage
+kubectl top pods -l app=devops-chatbot
+```
+
+For detailed Kubernetes deployment instructions, see [k8s/README.md](k8s/README.md)
 
 ## 📋 API Endpoints
 
